@@ -1,21 +1,28 @@
-export default {
+import Component from '../../../common/component.js';
+
+export default class TodoItem extends Component {
+  connectedCallback() {
+    this.innerHTML = this.render();
+  }
+  disconnectedCallback() {}
+
   render() {
     return `${this.html()}
             ${this.css()}`;
-  },
+  }
   html() {
     return /*html*/ `
-    <li id="1" class="todo-item">
-      <input id="ck-1" class="checkbox" type="checkbox" />
-      <label for="ck-1">HTML</label>
+    <li id="${this.id}" class="todo-item">
+      <input id="${this.prefix}-${this.id}" class="checkbox" type="checkbox" />
+      <label for="${this.prefix}-${this.id}">${this.content}</label>
       <i class="remove-todo far fa-times-circle"></i>
     </li>
     `;
-  },
+  }
   css() {
     return /*html*/ `
     <style>
-      .todo-item {
+      todos-todo-item .todo-item {
         position: relative;
         height: 50px;
         padding: 10px 15px;
@@ -26,22 +33,22 @@ export default {
         list-style: none;
       }
 
-      .todo-item:first-child {
+      todos-todo-item .todo-item:first-child {
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
       }
 
-      .todo-item:last-child {
+      todos-todo-item .todo-item:last-child {
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
       }
 
-      .checkbox {
+      todos-todo-item .checkbox {
         display: none;
       }
 
-      .checkbox + label {
-        position: absolute; /* 부모 위치를 기준으로 */
+      todos-todo-item .checkbox + label {
+        position: absolute;
         top: 50%;
         left: 15px;
         transform: translate3d(0, -50%, 0);
@@ -53,8 +60,8 @@ export default {
         user-select: none;
       }
 
-      .checkbox + label:before {
-        content: "";
+      todos-todo-item .checkbox + label:before {
+        content: '';
         position: absolute;
         top: 50%;
         left: 0;
@@ -65,8 +72,8 @@ export default {
         border: 1px solid #cfdadd;
       }
 
-      .checkbox:checked + label:after {
-        content: "";
+      todos-todo-item .checkbox:checked + label:after {
+        content: '';
         position: absolute;
         top: 50%;
         left: 6px;
@@ -76,8 +83,7 @@ export default {
         background-color: #23b7e5;
       }
 
-      /* .remove-todo button */
-      .remove-todo {
+      todos-todo-item .remove-todo {
         display: none;
         position: absolute;
         top: 50%;
@@ -86,11 +92,34 @@ export default {
         transform: translate3d(0, -50%, 0);
       }
 
-      /* todo-item이 호버 상태이면 삭제 버튼을 활성화 */
-      .todo-item:hover > .remove-todo {
+      todos-todo-item .todo-item:hover > .remove-todo {
         display: block;
       }
     </style>
     `;
   }
-};
+
+  get prefix() {
+    return this.getAttribute('prefix');
+  }
+  set prefix(value) {
+    this.setAttribute('prefix', value);
+  }
+
+  get id() {
+    return this.getAttribute('id');
+  }
+  set id(value) {
+    this.setAttribute('id', value);
+  }
+
+  get content() {
+    return this.getAttribute('content');
+  }
+  set content(value) {
+    this.setAttribute('content', value);
+  }
+}
+
+!customElements.get('todos-todo-item') &&
+  customElements.define('todos-todo-item', TodoItem);
