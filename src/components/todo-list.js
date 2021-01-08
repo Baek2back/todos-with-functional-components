@@ -1,16 +1,14 @@
-import Component from '../../../common/component.js';
-import '../presentationals/todo-item.js';
+import Component from '../common/component.js';
+import './todo-item.js';
 
 export default class TodoList extends Component {
-  constructor() {
-    super();
-    this._list = [
-      { id: 1, content: 'HTML', completed: true },
-      { id: 2, content: 'HTML', completed: true }
-    ];
-  }
-  connectedCallback() {
+  set list(val) {
+    this._list = val;
     this.innerHTML = this.render();
+  }
+
+  get list() {
+    return this._list;
   }
 
   render() {

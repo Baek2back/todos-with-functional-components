@@ -1,5 +1,5 @@
-import Component from '../../../common/component.js';
-import '../presentationals/title.js';
+import Component from '../common/component.js';
+import '../components/title.js';
 
 export default class HeaderContainer extends Component {
   constructor() {

@@ -1,14 +1,12 @@
 import Component from './common/component.js';
-import './components/header/container/header-container.js';
-import './components/main/container/main-container.js';
-import './components/footer/container/footer-container.js';
+import './containers/header-container.js';
+import './containers/main-container.js';
 
 export default class App extends Component {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = this.render();
-    this.dom = this.mapDOM(this.shadowRoot);
   }
 
   render() {
@@ -16,17 +14,10 @@ export default class App extends Component {
             ${this.css()}`;
   }
 
-  mapDOM(scope) {
-    return {
-      scope
-    };
-  }
-
   html() {
     return /*html*/ `
     <todos-header-container></todos-header-container>
     <todos-main-container></todos-main-container>
-    <todos-footer-container></todos-footer-container>
     `;
   }
 

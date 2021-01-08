@@ -1,24 +1,10 @@
-import Component from '../../../common/component.js';
+import Component from '../common/component.js';
 
 export default class Title extends Component {
-  connectedCallback() {
+  constructor() {
+    super();
     this.innerHTML = this.render();
   }
-
-  // static get observedAttributes() {
-  //   return ['title', 'ver'];
-  // }
-
-  // attributeChangedCallback(name) {
-  //   switch (name) {
-  //     case 'title':
-  //       this.render();
-  //       break;
-  //     case 'ver':
-  //       this.render();
-  //       break;
-  //   }
-  // }
 
   render() {
     return `${this.html()}

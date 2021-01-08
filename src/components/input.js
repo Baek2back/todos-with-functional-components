@@ -1,4 +1,4 @@
-import Component from '../../../common/component.js';
+import Component from '../common/component.js';
 
 export default class Input extends Component {
   connectedCallback() {

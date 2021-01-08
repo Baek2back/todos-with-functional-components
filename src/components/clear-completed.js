@@ -1,21 +1,46 @@
-import Component from '../../../common/component.js';
+import Component from '../common/component.js';
 
 export default class ClearCompleted extends Component {
-  connectedCallback() {
+  constructor() {
+    super();
     this.innerHTML = this.render();
   }
-  disconnectedCallback() {}
 
   render() {
     return `${this.html()}
             ${this.css()}`;
   }
 
+  static get observedAttributes() {
+    return ['total', 'complete'];
+  }
+
+  attributeChangedCallback(name) {
+    switch (name) {
+      case 'total':
+      case 'complete':
+        this.innerHTML = this.render();
+        break;
+      default:
+        return;
+    }
+  }
+
+  get remain() {
+    return [this.getAttribute('total'), this.getAttribute('complete')];
+  }
+  set remain(val) {
+    const { total, complete } = val;
+    this.setAttribute('total', total);
+    this.setAttribute('complete', complete);
+  }
+
   html() {
+    const [total, complete] = this.remain;
     return /*html*/ `
     <div class="clear-completed">
-      <button class="btn">Clear completed (<span class="completed-todos">0</span>)</button>
-      <strong class="active-todos">0</strong> items left
+      <button class="btn">Clear completed (<span class="completed-todos">${complete}</span>)</button>
+      <strong class="active-todos">${total}</strong> items left
     </div>
     `;
   }

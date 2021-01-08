@@ -1,10 +1,45 @@
-import Component from '../../../common/component.js';
+import Component from '../common/component.js';
 
 export default class Navigation extends Component {
-  connectedCallback() {
+  constructor() {
+    super();
     this.innerHTML = this.render();
+    this.dom = this.mapDOM(this);
+    this.status = 'all';
   }
+  connectedCallback() {}
+
   disconnectedCallback() {}
+  static get observedAttributes() {
+    return ['status'];
+  }
+  attributeChangedCallback(name, oldVal, newVal) {
+    switch (name) {
+      case 'status':
+        this.dom[oldVal].classList.remove('active');
+        this.dom[newVal].classList.add('active');
+        break;
+      default:
+        return;
+    }
+  }
+
+  get status() {
+    return this.getAttribute('status');
+  }
+
+  set status(val) {
+    this.setAttribute('status', val);
+  }
+
+  mapDOM(scope) {
+    return {
+      all: scope.querySelector('#all'),
+      active: scope.querySelector('#active'),
+      completed: scope.querySelector('#completed')
+    };
+  }
+
   render() {
     return `${this.html()}
             ${this.css()}`;
