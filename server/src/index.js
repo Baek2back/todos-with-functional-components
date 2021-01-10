@@ -10,7 +10,10 @@ const todos = require('./todos.js');
  * @param {*} packet 결과 파라미터
  */
 const response = (res, packet) => {
-  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  });
   res.end(JSON.stringify(packet));
 };
 
