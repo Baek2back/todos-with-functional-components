@@ -16,11 +16,17 @@ applyCSS(css);
 
 const template = createTemplate(html);
 
-const Counter = (targetElement) => {
+const getTodoCount = (todos) => {
+  const notCompleted = todos.filter((todo) => !todo.completed);
+  const { length } = notCompleted;
+  return length;
+};
+
+const Counter = (targetElement, { todos }) => {
   const newCounter = targetElement.cloneNode(true);
   newCounter.appendChild(template.content.cloneNode(true));
   const count = newCounter.querySelector('.active-todos');
-  count.textContent = 2;
+  count.textContent = getTodoCount(todos);
   return newCounter;
 };
 

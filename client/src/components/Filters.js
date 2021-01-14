@@ -1,8 +1,9 @@
 import { applyCSS, createTemplate, dataAttrSelector } from '../common/utils.js';
+import eventCreators from '../model/eventCreators.js';
 
 const html = /*html*/ `
   <ul class="nav">
-    <li id="all" class="active">All</li>
+    <li id="all">All</li>
     <li id="active">Active</li>
     <li id="completed">Completed</li>
   </ul>
@@ -33,11 +34,22 @@ applyCSS(css);
 
 const template = createTemplate(html);
 
-const Filters = (targetElement) => {
+const Filters = (targetElement, { currentFilter }, dispatch) => {
   const newFilters = targetElement.cloneNode(true);
 
   if (!newFilters.children.length)
     newFilters.appendChild(template.content.cloneNode(true));
+
+  [...newFilters.querySelectorAll('li')].forEach((li) => {
+    li.textContent === currentFilter
+      ? li.classList.add('active')
+      : li.classList.remove('active');
+  });
+
+  newFilters.addEventListener('click', (e) => {
+    if (!e.target.matches(`${filtersSelector} li`)) return;
+    dispatch(eventCreators.changeFilter(e.target.textContent));
+  });
 
   return newFilters;
 };

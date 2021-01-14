@@ -1,4 +1,7 @@
 import { applyCSS, createTemplate, dataAttrSelector } from '../common/utils.js';
+import eventCreators from '../model/eventCreators.js';
+import Checkbox from './Checkbox.js';
+import Button from './Button.js';
 
 const html = /*html*/ `
   <header>
@@ -6,21 +9,20 @@ const html = /*html*/ `
     <div class="ver">with Functional Components</div>
   </header>
   <main>
-    <input class="input-todo" placeholder="What needs tobe done?" autofocus />
+    <input class="input-todo" placeholder="What needs to be done?" autofocus />
     <section data-component="filters"></section>
     <section data-component="todos"></section>
   </main>
   <footer>
-    <div class="complete-all">
-      <input class="checkbox" type="checkbox" id="ck-complete-all" />
-      <label for="ck-complete-all">Mark all as complete</label>
-    </div>
+    <section data-component="checkbox"></section>
     <div class="clear-completed">
-      <button class="btn">Clear completed (<span class="complete-todos">0</span>)</button>
+      <section data-component="button"></section>
       <section data-component="counter"></section> items left
     </div>
   </footer>
 `;
+
+const template = createTemplate(html);
 
 const appSelector = dataAttrSelector('component', 'app');
 
@@ -78,84 +80,72 @@ const css = /*css*/ `
     margin: 20px 0;
   }
   
-  ${appSelector} .complete-all,
-  ${appSelector} .clear-completed {
-    position: relative;
-    flex-basis: 50%;
-  }
-
-  /* TODO: checkbox 별도의 컴포넌트로 분리 */
-  ${appSelector} .checkbox {
-    display: none;
-  }
-  
-  ${appSelector} .checkbox + label {
-    position: absolute; /* 부모 위치를 기준으로 */
-    top: 50%;
-    left: 15px;
-    transform: translate3d(0, -50%, 0);
-    display: inline-block;
-    width: 90%;
-    line-height: 2em;
-    padding-left: 35px;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  ${appSelector} .checkbox + label:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translate3d(0, -50%, 0);
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
-    border: 1px solid #cfdadd;
-  }
-  
-  ${appSelector} .checkbox:checked + label:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 6px;
-    transform: translate3d(0, -50%, 0);
-    width: 10px;
-    height: 10px;
-    background-color: #23b7e5;
-  }
-  
   ${appSelector} .clear-completed {
     text-align: right;
     padding-right: 15px;
-  }
-  
-  ${appSelector} .btn {
-    padding: 1px 5px;
-    font-size: 0.8em;
-    line-height: 1.5;
-    border-radius: 3px;
-    outline: none;
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-    cursor: pointer;
-  }
-  
-  ${appSelector} .btn:hover {
-    color: #333;
-    background-color: #e6e6e6;
-    border-color: #adadad;
   }
 `;
 
 applyCSS(css);
 
-const template = createTemplate(html);
+const addEvents = (targetElement, dispatch) => {
+  const addHandler = (e) => {
+    if (e.key === 'Enter') {
+      dispatch(eventCreators.addTodo(e.target.value));
+      e.target.value = '';
+    }
+  };
+  const toggleCompletedAllHandler = (e) => {
+    dispatch(eventCreators.completedToggleAll(e.target.checked));
+  };
 
-const App = (targetElement) => {
-  const newApp = targetElement.cloneNode();
+  const clearCompletedHandler = () => {
+    dispatch(eventCreators.clearCompleted());
+  };
+
+  targetElement
+    .querySelector(`${appSelector} .input-todo`)
+    .addEventListener('keydown', addHandler);
+
+  targetElement
+    .querySelector('[data-component="checkbox"] input')
+    .addEventListener('click', toggleCompletedAllHandler);
+
+  targetElement
+    .querySelector('[data-component="button"] button')
+    .addEventListener('click', clearCompletedHandler);
+};
+
+const filterTodos = (todos, filter) => {
+  const isCompleted = (todo) => todo.completed;
+  switch (filter) {
+    case 'Active':
+      return todos.filter((todo) => !isCompleted(todo));
+    case 'Completed':
+      return todos.filter(isCompleted);
+    default:
+      return [...todos];
+  }
+};
+
+const App = (targetElement, state, dispatch) => {
+  const { todos, currentFilter } = state;
+
+  // TODO: Todos와 중복 로직 처리하기
+  const currentTodos = filterTodos(todos, currentFilter);
+
+  const newApp = targetElement.cloneNode(true);
+  newApp.innerHTML = '';
   newApp.appendChild(template.content.cloneNode(true));
+
+  // TODO: 셀렉터 별도의 모듈로 만들기
+  newApp
+    .querySelector('[data-component="checkbox"]')
+    .appendChild(Checkbox({ currentTodos }));
+  newApp
+    .querySelector('[data-component="button"]')
+    .appendChild(Button({ currentTodos }));
+  addEvents(newApp, dispatch);
   return newApp;
 };
 
