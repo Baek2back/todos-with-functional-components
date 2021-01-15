@@ -1,12 +1,11 @@
-import { applyCSS, createTemplate, dataAttrSelector } from '../common/utils.js';
+import { applyCSS, createTemplate } from '../common/utils.js';
+import { buttonSelector } from '../common/selectors.js';
 
 const html = /*html*/ `
   <button class="btn">Clear completed (<span class="complete-todos"></span>)</button>
 `;
 
 const template = createTemplate(html);
-
-const buttonSelector = dataAttrSelector('component', 'button');
 
 const css = /*css*/ `
   ${buttonSelector} {

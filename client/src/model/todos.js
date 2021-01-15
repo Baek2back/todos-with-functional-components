@@ -37,7 +37,6 @@ const modifiers = {
 
 export default (prevState, event) => {
   if (!event) return [];
-
   const currentModifiers = modifiers[event.type];
 
   return currentModifiers ? currentModifiers(prevState, event) : prevState;

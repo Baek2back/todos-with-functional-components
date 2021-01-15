@@ -10,13 +10,20 @@ import registry from './common/registry.js';
 import eventBusFactory from './model/eventBus.js';
 import modelFactory from './model/model.js';
 
+import applyMiddlewares from './model/applyMiddlewares.js';
+import loggerMiddleware from './model/loggerMiddleware.js';
+import thunkMiddleware from './model/thunkMiddleware.js';
+
 registry.addToRegistry('app', App);
 registry.addToRegistry('todos', Todos);
 registry.addToRegistry('filters', Filters);
 registry.addToRegistry('counter', Counter);
 
 const modifiers = modelFactory();
-const eventBus = eventBusFactory(modifiers);
+const eventBus = eventBusFactory(
+  modifiers,
+  applyMiddlewares(loggerMiddleware, thunkMiddleware)
+);
 
 const render = (state) => {
   window.requestAnimationFrame(() => {
@@ -25,7 +32,6 @@ const render = (state) => {
     applyDiff(document.body, main, newMain);
   });
 };
-
 eventBus.subscribe(render);
 
 render(eventBus.getState());

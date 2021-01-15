@@ -1,5 +1,10 @@
-import { applyCSS, createTemplate, dataAttrSelector } from '../common/utils.js';
+import { applyCSS, createTemplate } from '../common/utils.js';
 import eventCreators from '../model/eventCreators.js';
+import {
+  appSelector,
+  checkboxSelector,
+  buttonSelector
+} from '../common/selectors.js';
 import Checkbox from './Checkbox.js';
 import Button from './Button.js';
 
@@ -23,8 +28,6 @@ const html = /*html*/ `
 `;
 
 const template = createTemplate(html);
-
-const appSelector = dataAttrSelector('component', 'app');
 
 const css = /*css*/ `
   ${appSelector} {
@@ -108,11 +111,11 @@ const addEvents = (targetElement, dispatch) => {
     .addEventListener('keydown', addHandler);
 
   targetElement
-    .querySelector('[data-component="checkbox"] input')
+    .querySelector(`${checkboxSelector} input`)
     .addEventListener('click', toggleCompletedAllHandler);
 
   targetElement
-    .querySelector('[data-component="button"] button')
+    .querySelector(`${buttonSelector} button`)
     .addEventListener('click', clearCompletedHandler);
 };
 
@@ -138,12 +141,11 @@ const App = (targetElement, state, dispatch) => {
   newApp.innerHTML = '';
   newApp.appendChild(template.content.cloneNode(true));
 
-  // TODO: 셀렉터 별도의 모듈로 만들기
   newApp
-    .querySelector('[data-component="checkbox"]')
+    .querySelector(`${checkboxSelector}`)
     .appendChild(Checkbox({ currentTodos }));
   newApp
-    .querySelector('[data-component="button"]')
+    .querySelector(`${buttonSelector}`)
     .appendChild(Button({ currentTodos }));
   addEvents(newApp, dispatch);
   return newApp;

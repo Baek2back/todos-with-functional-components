@@ -1,8 +1,12 @@
 import { deepClone, deepFreeze } from '../common/utils.js';
 
-export default (model) => {
-  let listeners = [];
+// model === combinedReducer
+const eventBus = (model, enhancer) => {
+  if (typeof enhancer === 'function') {
+    return enhancer(eventBus)(model);
+  }
   let state = model();
+  let listeners = [];
 
   const subscribe = (newListener) => {
     listeners = [...listeners, newListener];
@@ -12,7 +16,7 @@ export default (model) => {
   };
 
   const invokeAllSubscribers = () => {
-    const newState = deepFreeze(deepClone(state));
+    const newState = deepFreeze(state);
     listeners.forEach((listener) => listener(newState));
   };
 
@@ -30,3 +34,5 @@ export default (model) => {
     getState: () => deepFreeze(deepClone(state))
   };
 };
+
+export default eventBus;
