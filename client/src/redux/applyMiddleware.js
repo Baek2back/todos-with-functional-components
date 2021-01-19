@@ -1,7 +1,7 @@
-export default function applyMiddlewares(...middlewareFactories) {
-  return function enhancer(eventBus) {
-    return function newEventBus(model) {
-      const store = eventBus(model);
+export default function applyMiddleware(...middlewareFactories) {
+  return function enhancer(createStore) {
+    return function newCreateStore(reducer) {
+      const store = createStore(reducer);
       let dispatch = store.dispatch;
       middlewareFactories.forEach((factory) => {
         dispatch = factory(store)(dispatch);

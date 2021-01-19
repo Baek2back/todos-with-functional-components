@@ -1,7 +1,7 @@
 export default function createLoggerMiddleware(store) {
   return function logger(dispatch) {
     return function newDispatch(action) {
-      console.log('======== Logger ========');
+      console.log('======== Redux Logger ========');
       console.log('Action Type: ', action.type);
       const prevState = store.getState();
       console.log('Prev: ', prevState);
@@ -10,8 +10,7 @@ export default function createLoggerMiddleware(store) {
 
       const nextState = store.getState();
       console.log('Next: ', nextState);
-      console.log('========================');
-
+      console.log('==============================');
       return returnValue;
     };
   };

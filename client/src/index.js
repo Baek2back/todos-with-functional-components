@@ -1,37 +1,13 @@
-import App from './components/App.js';
-import Todos from './components/Todos.js';
-import Filters from './components/Filters.js';
-import Counter from './components/Counter.js';
+// eslint-disable-next-line no-unused-vars
+import App from './App';
+import Justact from './justact';
+import './index.css';
 
-import applyDiff from './common/applyDiff.js';
+import { createStore, applyMiddleware, provide } from './redux';
+import rootReducer from './modules';
+import { logger, thunk } from './middlewares';
 
-import registry from './common/registry.js';
+const store = createStore(rootReducer, applyMiddleware(thunk, logger));
+provide(store);
 
-import eventBusFactory from './model/eventBus.js';
-import modelFactory from './model/model.js';
-
-import applyMiddlewares from './model/applyMiddlewares.js';
-import loggerMiddleware from './model/loggerMiddleware.js';
-import thunkMiddleware from './model/thunkMiddleware.js';
-
-registry.addToRegistry('app', App);
-registry.addToRegistry('todos', Todos);
-registry.addToRegistry('filters', Filters);
-registry.addToRegistry('counter', Counter);
-
-const modifiers = modelFactory();
-const eventBus = eventBusFactory(
-  modifiers,
-  applyMiddlewares(loggerMiddleware, thunkMiddleware)
-);
-
-const render = (state) => {
-  window.requestAnimationFrame(() => {
-    const main = document.querySelector('#root');
-    const newMain = registry.renderRoot(main, state, eventBus.dispatch);
-    applyDiff(document.body, main, newMain);
-  });
-};
-eventBus.subscribe(render);
-
-render(eventBus.getState());
+Justact.render(<App />, document.getElementById('root'));
