@@ -1,15 +1,20 @@
 // eslint-disable-next-line no-unused-vars
 import Justact from '../justact';
+// eslint-disable-next-line no-unused-vars
+import Filter from './Filter';
 import styles from './Filters.module.css';
 
-const Filters = () => {
+const Filters = ({ currentFilter, changeFilter }) => {
+  const types = ['all', 'active', 'completed'];
   return (
     <ul className={styles.nav}>
-      <li id="all" className={styles.active}>
-        All
-      </li>
-      <li id="active">Active</li>
-      <li id="completed">Completed</li>
+      {types.map((type) => (
+        <Filter
+          type={type}
+          isActive={currentFilter === type}
+          changeFilter={changeFilter}
+        />
+      ))}
     </ul>
   );
 };

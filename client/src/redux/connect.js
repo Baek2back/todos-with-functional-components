@@ -14,7 +14,9 @@ export function connect(
   return (component) => (...args) => {
     if (!currentStore)
       throw new Error("You can't use connect unless provide a store");
-    const newArgs = Object.assign({}, ...args, { mapState, mapDispatch });
+    const actions = mapDispatch(currentStore.dispatch);
+    const state = mapState(currentStore.getState());
+    const newArgs = Object.assign({}, ...args, { state, actions });
     return component(newArgs);
   };
 }

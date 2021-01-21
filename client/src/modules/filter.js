@@ -6,7 +6,7 @@ export const changeFilter = (filter) => ({
 });
 
 const initialState = {
-  currentFilter: 'All'
+  currentFilter: 'all'
 };
 
 export default function filter(state = initialState, action) {
@@ -14,7 +14,7 @@ export default function filter(state = initialState, action) {
     case CHANGE_FILTER:
       return {
         ...state,
-        currentFilter: action.filter
+        currentFilter: action.currentFilter
       };
     default:
       return state;

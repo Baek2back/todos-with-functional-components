@@ -3,7 +3,14 @@ export default function createStore(reducer, enhancer) {
     return enhancer(createStore)(reducer);
   }
 
-  let state;
+  let state = {
+    todos: {
+      data: []
+    },
+    filter: {
+      currentFilter: 'all'
+    }
+  };
   let listeners = [];
 
   function getState() {
@@ -26,9 +33,7 @@ export default function createStore(reducer, enhancer) {
   }
 
   function invokeAllSubscribers() {
-    // TODO: deepFreeze
-    const newState = state;
-    listeners.forEach((listener) => listener(newState));
+    listeners.forEach((listener) => listener());
   }
 
   return {

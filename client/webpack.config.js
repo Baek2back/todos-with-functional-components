@@ -55,6 +55,7 @@ module.exports = {
   devServer: {
     hot: true
   },
+  devtool: 'cheap-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: 'public/index.html'

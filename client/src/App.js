@@ -1,12 +1,48 @@
 // eslint-disable-next-line no-unused-vars
 import Justact from './justact';
 // eslint-disable-next-line no-unused-vars
-import { Button, Checkbox, Counter, Filters, Todos } from './components';
-
+import { Button, Checkbox, Counter, Filters, Todos, Input } from './components';
 import styles from './App.module.css';
-import { connect } from './redux';
 
-const App = () => {
+const App = ({ state, actions }) => {
+  const { todos, filter } = state;
+  const { data } = todos;
+  const { currentFilter } = filter;
+
+  const { todosActions, filterActions } = actions;
+  const {
+    addTodo,
+    deleteTodo,
+    toggleCompletedTodo,
+    toggleCompletedAllTodo,
+    clearCompletedTodos
+  } = todosActions;
+  const { changeFilter } = filterActions;
+
+  const { filteredList, completed } = ((condition, data) => {
+    let filteredList = [];
+    switch (condition) {
+      case 'all':
+        filteredList = data;
+        return {
+          filteredList,
+          completed: filteredList.filter((todo) => todo.completed).length
+        };
+      case 'active':
+        filteredList = data.filter((todo) => !todo.completed);
+        return {
+          filteredList,
+          completed: data.length - filteredList.length
+        };
+      case 'completed':
+        filteredList = data.filter((todo) => todo.completed);
+        return {
+          filteredList,
+          completed: filteredList.length
+        };
+    }
+  })(currentFilter, data);
+
   return (
     <section className={styles.App}>
       <header>
@@ -14,23 +50,30 @@ const App = () => {
         <div className={styles.ver}>with Functional Components</div>
       </header>
       <main>
-        <input
-          className={styles.input}
-          placeholder="What needs to be done?"
-          autofocus
+        <Input addTodo={addTodo} />
+        <Filters currentFilter={currentFilter} changeFilter={changeFilter} />
+        <Todos
+          list={filteredList}
+          deleteTodo={deleteTodo}
+          toggleCompletedTodo={toggleCompletedTodo}
         />
-        <Filters></Filters>
-        <Todos></Todos>
       </main>
-      <footer className={styles.footer}>
-        <Checkbox></Checkbox>
-        <div>
-          <Button></Button>
-          <Counter></Counter> items left
+      <footer>
+        <Checkbox
+          status={
+            filteredList.length &&
+            filteredList.length ===
+              filteredList.filter((todo) => todo.completed).length
+          }
+          toggleCompletedAllTodo={toggleCompletedAllTodo}
+        />
+        <div className={styles.clear}>
+          <Button count={completed} clearCompletedTodos={clearCompletedTodos} />
+          <Counter count={filteredList.length} /> items left
         </div>
       </footer>
     </section>
   );
 };
 
-export default connect()(App);
+export default App;

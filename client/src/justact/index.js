@@ -1,3 +1,5 @@
+import { useState } from './hooks/useState';
+
 const isFragment = (type) => type === 'fragment';
 const isText = (type) => type === 'TEXT_ELEMENT';
 const isProperty = (key) => key !== 'children' && !isEvent(key);
@@ -13,7 +15,7 @@ const effectTags = Object.freeze({
   PLACEMENT: 'PLACEMENT'
 });
 
-const state = {
+export const state = {
   workInProgressRoot: null,
   currentRoot: null,
   deletions: null,
@@ -23,13 +25,14 @@ const state = {
 };
 
 const createElement = (type, props, ...children) => {
+  children = children.flat();
   return {
     type,
     props: {
       ...props,
-      children: children.map((child) =>
-        typeof child === 'object' ? child : createTextElement(child)
-      )
+      children: children.map((child) => {
+        return typeof child === 'object' ? child : createTextElement(child);
+      })
     }
   };
 };
@@ -62,7 +65,6 @@ const createDom = (fiber) => {
     : isText(fiber.type)
     ? document.createTextNode('')
     : document.createElement(fiber.type);
-
   updateDom(dom, {}, fiber.props);
   return dom;
 };
@@ -129,6 +131,7 @@ const commitWork = (fiber) => {
     updateDom(fiber.dom, fiber.alternate.props, fiber.props);
   } else if (fiber.effectTag === effectTags.DELETION) {
     commitDeletion(fiber, domParent);
+    return;
   }
 
   commitWork(fiber.child);
@@ -145,7 +148,6 @@ const commitDeletion = (fiber, domParent) => {
 
 const workLoop = (deadline) => {
   let shouldYield = false;
-
   while (state.nextUnitOfWork && !shouldYield) {
     state.nextUnitOfWork = performUnitOfWork(state.nextUnitOfWork);
     shouldYield = deadline.timeRemaining() < 1;
@@ -195,12 +197,13 @@ const updateHostComponent = (fiber) => {
 const reconcileChildren = (workInProgressFiber, elements) => {
   let oldFiber =
     workInProgressFiber.alternate && workInProgressFiber.alternate.child;
+  let index = 0;
   let prevSibling = null;
 
-  elements.forEach((element, index) => {
+  while (index < elements.length || !!oldFiber) {
+    const element = elements[index];
     let newFiber = null;
     const sameType = oldFiber && element && element.type === oldFiber.type;
-
     if (sameType) {
       // update the node
       newFiber = {
@@ -235,11 +238,15 @@ const reconcileChildren = (workInProgressFiber, elements) => {
       oldFiber = oldFiber.sibling;
     }
 
-    if (!index) workInProgressFiber.child = newFiber;
-    else if (element) prevSibling.sibling = newFiber;
+    if (index === 0) {
+      workInProgressFiber.child = newFiber;
+    } else if (element) {
+      prevSibling.sibling = newFiber;
+    }
 
     prevSibling = newFiber;
-  });
+    index++;
+  }
 };
 
-export default { createElement, render };
+export default { createElement, render, useState };

@@ -6,5 +6,4 @@ const rootReducer = combineReducers({
   filter,
   todos
 });
-
 export default rootReducer;

@@ -2,10 +2,12 @@
 import Justact from '../justact';
 import styles from './Button.module.css';
 
-const Buttons = (props) => {
-  const { count } = props;
+const Buttons = ({ count, clearCompletedTodos }) => {
+  const clearCompletedTodosHandler = () => {
+    clearCompletedTodos();
+  };
   return (
-    <button className={styles.button}>
+    <button className={styles.button} onClick={clearCompletedTodosHandler}>
       Clear completed (<span>{`${count}`}</span>)
     </button>
   );
