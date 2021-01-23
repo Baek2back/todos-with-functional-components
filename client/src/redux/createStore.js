@@ -5,7 +5,9 @@ export default function createStore(reducer, enhancer) {
 
   let state = {
     todos: {
-      data: []
+      loading: false,
+      data: [],
+      error: null
     },
     filter: {
       currentFilter: 'all'

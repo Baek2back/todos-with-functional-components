@@ -7,7 +7,7 @@ const Todo = ({ id, content, completed, deleteTodo, toggleCompletedTodo }) => {
     deleteTodo(id);
   };
   const toggleCompletedTodoHandler = () => {
-    toggleCompletedTodo(id);
+    toggleCompletedTodo(id, { completed: !completed });
   };
   return (
     <li id={id} className={styles.todo}>

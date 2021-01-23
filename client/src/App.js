@@ -4,6 +4,8 @@ import Justact from './justact';
 import { Button, Checkbox, Counter, Filters, Todos, Input } from './components';
 import styles from './App.module.css';
 
+let init = false;
+
 const App = ({ state, actions }) => {
   const { todos, filter } = state;
   const { data } = todos;
@@ -15,12 +17,18 @@ const App = ({ state, actions }) => {
     deleteTodo,
     toggleCompletedTodo,
     toggleCompletedAllTodo,
-    clearCompletedTodos
+    clearCompletedTodos,
+    fetchTodos
   } = todosActions;
   const { changeFilter } = filterActions;
 
+  if (!init) {
+    init = true;
+    fetchTodos();
+  }
   const { filteredList, completed } = ((condition, data) => {
     let filteredList = [];
+
     switch (condition) {
       case 'all':
         filteredList = data;

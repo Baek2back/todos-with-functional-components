@@ -7,7 +7,7 @@ import rootReducer from './modules';
 import { createStore, applyMiddleware, provide } from './redux';
 import { logger, thunk } from './middlewares';
 
-const store = createStore(rootReducer, applyMiddleware(thunk, logger));
+const store = createStore(rootReducer, applyMiddleware(logger, thunk));
 provide(store);
 
 const wrappedRender = (Component, root) => () => {

@@ -6,6 +6,7 @@ const Checkbox = ({ status, toggleCompletedAllTodo }) => {
   const toggleCompletedAllTodoHandler = () => {
     toggleCompletedAllTodo(!status);
   };
+
   return (
     <div className={styles['complete-all']}>
       <input

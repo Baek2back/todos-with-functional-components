@@ -1,9 +1,9 @@
-import combineReducers from '../redux/combineReducers.js';
-import filter from './filter.js';
-import todos from './todos.js';
+import combineReducers from '../redux/combineReducers';
+import filter from './filter';
+import todosAsync from './todosAsync';
 
 const rootReducer = combineReducers({
   filter,
-  todos
+  todos: todosAsync
 });
 export default rootReducer;

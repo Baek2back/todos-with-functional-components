@@ -2,7 +2,7 @@
 import Justact from '../justact';
 import { bindActionCreators, connect } from '../redux';
 import App from '../App';
-import * as todosActions from '../modules/todos';
+import * as todosActions from '../modules/todosAsync';
 import * as filterActions from '../modules/filter';
 
 const mapStateToProps = (state) => {
