@@ -1,4 +1,5 @@
 import { useState } from './hooks/useState';
+import { useEffect } from './hooks/useEffect';
 
 const isFragment = (type) => type === 'fragment';
 const isText = (type) => type === 'TEXT_ELEMENT';
@@ -249,4 +250,4 @@ const reconcileChildren = (workInProgressFiber, elements) => {
   }
 };
 
-export default { createElement, render, useState };
+export default { createElement, render, useState, useEffect };
