@@ -1,10 +1,10 @@
-import { state } from '../index';
+import { JustactState } from '../justact';
 
-export function useState(initial) {
+export const useState = (initial) => {
   const oldHook =
-    state.workInProgressFiber.alternate &&
-    state.workInProgressFiber.alternate.hooks &&
-    state.workInProgressFiber.alternate.hooks[state.hookIndex];
+    JustactState.workInProgressFiber.alternate &&
+    JustactState.workInProgressFiber.alternate.hooks &&
+    JustactState.workInProgressFiber.alternate.hooks[JustactState.hookIndex];
 
   const hook = {
     state: oldHook ? oldHook.state : initial,
@@ -18,17 +18,17 @@ export function useState(initial) {
 
   const setState = (action) => {
     hook.queue.push(action);
-    state.workInProgressRoot = {
-      dom: state.currentRoot && state.currentRoot.dom,
-      props: state.currentRoot && state.currentRoot.props,
-      alternate: state.currentRoot
+    JustactState.workInProgressRoot = {
+      dom: JustactState.currentRoot && JustactState.currentRoot.dom,
+      props: JustactState.currentRoot && JustactState.currentRoot.props,
+      alternate: JustactState.currentRoot
     };
-    state.nextUnitOfWork = state.workInProgressRoot;
-    state.deletions = [];
+    JustactState.nextUnitOfWork = JustactState.workInProgressRoot;
+    JustactState.deletions = [];
   };
 
-  state.workInProgressFiber.hooks.push(hook);
-  state.hookIndex++;
+  JustactState.workInProgressFiber.hooks.push(hook);
+  JustactState.hookIndex++;
 
   return [hook.state, setState];
-}
+};
